@@ -13,6 +13,8 @@ package com.example.vm.kopce;
 
 public class MainActivity extends AppCompatActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
         final TextView tvGPS = (TextView)findViewById(R.id.textViewGPS);
         Button btnGPS = (Button)findViewById(R.id.buttonGPS);
         final TextView tvAltitude = (TextView)findViewById(R.id.textViewAltitude);
-        final GPSTracker gps = new GPSTracker(MainActivity.this); //singleton? vzdy treba novu instanciu
+        final TextView tvCompass = (TextView)findViewById(R.id.textViewCompass);
+        final TextView tvRotation = (TextView)findViewById(R.id.textViewRotation);
+        final GPSTracker gps = new GPSTracker(MainActivity.this);
         btnGPS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     gps.showSettingsAlert();
                 }
-/*
-                MySensors sensors = new MySensors();
-                    tvCompass.setText("Compass: " + Float.toString(sensors.getCompass())); */
+
+                Compass compass = new Compass (MainActivity.this, tvCompass);
+                Rotation rotation = new Rotation (MainActivity.this, tvRotation);
             }
         });
 
