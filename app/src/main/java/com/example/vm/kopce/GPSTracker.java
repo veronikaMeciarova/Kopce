@@ -19,6 +19,7 @@ public class GPSTracker extends Service implements LocationListener{
     private final Context context;
 
     boolean isGPSEnabled = false;
+    double nezmysel = 20000;
 
     private LocationManager locationManager;
 
@@ -46,7 +47,7 @@ public class GPSTracker extends Service implements LocationListener{
     public double getLatitude() {
         Location loc = this.getLocation();
         if (loc == null) {
-            return 200;
+            return nezmysel;
         } else {
             return loc.getLatitude();
         }
@@ -55,7 +56,7 @@ public class GPSTracker extends Service implements LocationListener{
     public double getLongitude() {
         Location loc = this.getLocation();
         if (loc == null) {
-            return 200;
+            return nezmysel;
         } else {
             return loc.getLongitude();
         }
