@@ -10,6 +10,10 @@ public class Data {
     public Data() {
         databaza = new ArrayList<>();
         Kopec k;
+        this.naplnDatabazu();
+    }
+
+    public void naplnDatabazu() { // jedna metoda moze mat len 64KB kodu, preto je rozdelena na 8 casti
         this.napln0();
         this.napln1();
         this.napln2();
@@ -7320,17 +7324,53 @@ public class Data {
         databaza.add (new Kopec(49.277119, 18.0339538, 618, "Snoz"));
         databaza.add (new Kopec(48.9926142, 19.6620656, nezmysel, "Škopovo"));
     }
-    
-
 
     /* Vytvorenie zoznamu vrcholov, ktore su vo vzdialenosti ??km od mojej aktualnej GPS pozicie
     * PROBLEM - prevod stupnov na km
     * rozdiel medzi zemepisnou vyskou a sirkou - ine vzdialenosti!!
+    *
+    * polomer - v zemepisnych dlzkach
     * */
     public ArrayList<Kopec> najblizsieVrcholy (double myLongtitude, double myLatitude, double polomer) {
         ArrayList<Kopec> najblizsie = new ArrayList<>();
         for (Kopec k : databaza) {
             if ((((k.longtitude - myLongtitude)*(k.longtitude - myLongtitude)) + ((k.latitude - myLatitude)*(k.latitude - myLatitude))) <= (polomer*polomer)) {
+                najblizsie.add(k);
+            }
+        }
+        return najblizsie;
+    }
+
+
+    // source: https://www.geodatasource.com/developers/java
+    private static double distance(double lon1, double lat1, double lon2, double lat2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344; // lebo chceme KM
+        return (dist);
+    }
+
+    /*This function converts decimal degrees to radians*/
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    /*	This function converts radians to decimal degrees*/
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
+    }
+
+
+    /* Funkcia vracia pole kopcov v okoli "polomer" kilometrov.
+    *
+    * */
+    public ArrayList<Kopec> vrcholyVOkoli (double myLongtitude, double myLatitude, double polomer) {
+        ArrayList<Kopec> najblizsie = new ArrayList<>();
+        for (Kopec k : databaza) {
+            if (distance(myLongtitude, myLatitude, k.longtitude, k.latitude) <= polomer ) {
                 najblizsie.add(k);
             }
         }
