@@ -41,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
                     double lon = gps.getLongitude();
                     double altit = gps.getAltitude();
 
-                    Compass compass = new Compass (MainActivity.this, tvCompass);
-                    Rotation rotation = new Rotation (MainActivity.this, tvRotation);
+
 
                     // GPS
                     if (lat != nezmysel && lon != nezmysel) {
@@ -58,16 +57,22 @@ public class MainActivity extends AppCompatActivity {
                         tvAltitude.setText("Nie je možné zistiť nadmorskú výšku - skúste, prosím, neskôr.");
                     }
 
-                    // VRCHOLY
-                    ArrayList<Kopec> viditelneVrcholy = data.vrcholyVOkoli(lon,lat,20);
-                    String viditelneVrcholyString = data.vrcholyToString(viditelneVrcholy);
-                    tvPeaks.setText(viditelneVrcholyString);
+                    // VRCHOL
+                    ArrayList<Kopec> viditelneVrcholy = data.vrcholyVOkruhu(lon, lat, 8);
+                    Rotation rotation = new Rotation (MainActivity.this, tvRotation, data, tvPeaks, viditelneVrcholy);
+//                    String viditelneVrcholyString = data.vrcholyToString(viditelneVrcholy);
+//                    tvPeaks.setText(viditelneVrcholyString);
 
                 } else {
                     gps.showSettingsAlert();
                 }
+                //Compass compass = new Compass (MainActivity.this, tvCompass);
+                //Rotation rotation = new Rotation (MainActivity.this, tvRotation, data, tvPeaks, viditelneVrcholy);
+
             }
         });
+
+
 
 
         btnExit.setOnClickListener(new View.OnClickListener() {
