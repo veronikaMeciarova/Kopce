@@ -7371,9 +7371,11 @@ public class Data {
     }
 
     public ArrayList<Kopec> vrcholyVSmere (ArrayList<Kopec> vrcholy, double myLat, double myLon, double smer, double rozptyl) {
-        for (Kopec k : vrcholy) {
+        int pocetVrcholov = vrcholy.size();
+        for (int i=pocetVrcholov-1; i >= 0; i--) {
+            Kopec k = vrcholy.get(i);
             if (vidimKopec(myLon, myLat, k.longtitude, k.latitude, smer, rozptyl) == false) {
-                vrcholy.remove(k);
+                vrcholy.remove(i);
             }
         }
         return vrcholy;
@@ -7383,8 +7385,11 @@ public class Data {
     *
     * */
     public boolean vidimKopec (double myLon, double myLat, double kopecLon, double kopecLat, double smer, double rozptyl) {
+        if (smer < 0) {
+            smer = smer + 360;
+        }
         double smerKopca = nezmysel; //uhol od S
-        final double oneLat = 111.1895769599889; // vzdialenost o jednu longtiude
+        final double oneLat = 111.1895769599889; // vzdialenost o jednu latitude
         if (myLon == kopecLon){ // specificky pripad, ktory nevytvori trojuholnik
                 if (myLat > kopecLat) {
                     smerKopca = 180;

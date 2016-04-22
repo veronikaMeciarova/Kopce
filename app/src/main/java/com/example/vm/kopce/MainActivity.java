@@ -29,9 +29,10 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView tvGPS = (TextView)findViewById(R.id.textViewGPS);
         final TextView tvAltitude = (TextView)findViewById(R.id.textViewAltitude);
-        final TextView tvCompass = (TextView)findViewById(R.id.textViewCompass);
         final TextView tvRotation = (TextView)findViewById(R.id.textViewRotation);
         final TextView tvPeaks = (TextView)findViewById(R.id.textPeaks);
+
+        final Rotation rotation = new Rotation (MainActivity.this);
 
         btnGPS.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,7 +42,10 @@ public class MainActivity extends AppCompatActivity {
                     double lon = gps.getLongitude();
                     double altit = gps.getAltitude();
 
-
+                    //LEN PRE TESTOVANIE!!!
+                    lon = 18.764652;
+                    lat = 49.182103;
+                    altit = 400;
 
                     // GPS
                     if (lat != nezmysel && lon != nezmysel) {
@@ -57,23 +61,24 @@ public class MainActivity extends AppCompatActivity {
                         tvAltitude.setText("Nie je možné zistiť nadmorskú výšku - skúste, prosím, neskôr.");
                     }
 
-                    // VRCHOL
-                    ArrayList<Kopec> viditelneVrcholy = data.vrcholyVOkruhu(lon, lat, 8);
-                    Rotation rotation = new Rotation (MainActivity.this, tvRotation, data, tvPeaks, viditelneVrcholy);
-//                    String viditelneVrcholyString = data.vrcholyToString(viditelneVrcholy);
-//                    tvPeaks.setText(viditelneVrcholyString);
+                    //ROTACIA
+                    int x = rotation.getX();
+                    int y = rotation.getY();
+                    int z = rotation.getZ();
+                    tvRotation.setText(" x: " + Integer.toString(x) + "\n y: " + Integer.toString(y) + "\n z: " + Integer.toString(z) + "\n" + rotation.svetovaStrana(-x));
+
+                    //VRCHOLY NA DOHLAD
+                    int viditelnostVKm = 8;
+                    ArrayList<Kopec> viditelneVrcholy = data.vrcholyVOkruhu(lon, lat, viditelnostVKm);
+                    ArrayList<Kopec> vrcholyVSmere = data.vrcholyVSmere(viditelneVrcholy, lat, lon, -x, 90);
+                    String viditelneVrcholyString = data.vrcholyToString(vrcholyVSmere);
+                    tvPeaks.setText(viditelneVrcholyString);
 
                 } else {
                     gps.showSettingsAlert();
                 }
-                //Compass compass = new Compass (MainActivity.this, tvCompass);
-                //Rotation rotation = new Rotation (MainActivity.this, tvRotation, data, tvPeaks, viditelneVrcholy);
-
             }
         });
-
-
-
 
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
