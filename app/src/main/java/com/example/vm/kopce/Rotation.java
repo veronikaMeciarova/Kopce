@@ -75,15 +75,27 @@ public class Rotation implements SensorEventListener {
         return z;
     }
 
+    public int smerKamery() {
+        int degree = -x;
+        if (degree < 0) {
+            degree = degree + 360;
+        }
+        degree = (degree+270)%360;
+
+        return degree;
+    }
+
     public String svetovaStrana (double degree){
         if (degree < 0) {
             degree = degree + 360;
         }
 
-        if ((degree <= 45 && degree >= 0) || (degree <= 360 && degree > 270)) {
+//        degree = (degree+270)%360; // smer kamery, pretoze inak by ukazovalo smer vrcholu mobilu
+
+        if ((degree <= 45 && degree >= 0) || (degree <= 360 && degree > 315)) {
             return "S";
         }
-        if (degree <= 270 && degree > 225) {
+        if (degree <= 315 && degree > 225) {
             return "V";
         }
         if (degree <= 225 && degree > 135) {

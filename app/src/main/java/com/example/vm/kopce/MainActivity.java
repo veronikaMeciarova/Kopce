@@ -43,9 +43,15 @@ public class MainActivity extends AppCompatActivity {
                     double altit = gps.getAltitude();
 
                     //LEN PRE TESTOVANIE!!!
-                    lon = 18.764652;
-                    lat = 49.182103;
                     altit = 400;
+
+                    //Rosina
+//                    lon = 18.764652;
+//                    lat = 49.182103;
+
+                    //Matfyz
+                    lat = 48.150959;
+                    lon = 17.070030;
 
                     // GPS
                     if (lat != nezmysel && lon != nezmysel) {
@@ -65,14 +71,17 @@ public class MainActivity extends AppCompatActivity {
                     int x = rotation.getX();
                     int y = rotation.getY();
                     int z = rotation.getZ();
+                    //int smerKamery = rotation.smerKamery();
                     tvRotation.setText(" x: " + Integer.toString(x) + "\n y: " + Integer.toString(y) + "\n z: " + Integer.toString(z) + "\n" + rotation.svetovaStrana(-x));
 
+
                     //VRCHOLY NA DOHLAD
-                    int viditelnostVKm = 8;
+                    int viditelnostVKm = 10;
+                    int rozptyl = 40; // v stupnoch, sucet do prava aj do lava
                     ArrayList<Kopec> viditelneVrcholy = data.vrcholyVOkruhu(lon, lat, viditelnostVKm);
-                    ArrayList<Kopec> vrcholyVSmere = data.vrcholyVSmere(viditelneVrcholy, lat, lon, -x, 90);
+                    ArrayList<Kopec> vrcholyVSmere = data.vrcholyVSmere(viditelneVrcholy, lat, lon, -x, rozptyl);
                     String viditelneVrcholyString = data.vrcholyToString(vrcholyVSmere);
-                    tvPeaks.setText(viditelneVrcholyString);
+                    tvPeaks.setText("Vrcholy do " + viditelnostVKm + "km:\n" + viditelneVrcholyString);
 
                 } else {
                     gps.showSettingsAlert();

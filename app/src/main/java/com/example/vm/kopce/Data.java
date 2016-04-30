@@ -7385,6 +7385,7 @@ public class Data {
     *
     * */
     public boolean vidimKopec (double myLon, double myLat, double kopecLon, double kopecLat, double smer, double rozptyl) {
+        rozptyl /= 2;
         if (smer < 0) {
             smer = smer + 360;
         }
