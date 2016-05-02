@@ -16,10 +16,9 @@
         android:layout_height="wrap_content"
         android:text="Zobraz polohu"
         android:id="@+id/buttonGPS"
-        android:layout_marginBottom="28dp"
-        android:layout_above="@+id/textView"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -27,9 +26,9 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Rotácia"
         android:id="@+id/textViewRotation"
-        android:layout_alignTop="@+id/textViewGPS"
-        android:layout_toRightOf="@+id/buttonGPS"
-        android:layout_toEndOf="@+id/buttonGPS" />
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/buttonExit"
+        android:layout_alignStart="@+id/buttonExit" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -37,7 +36,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="GPS súradnice"
         android:id="@+id/textViewGPS"
-        android:layout_below="@+id/buttonGPS"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -47,10 +46,11 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Nadmorská výška"
         android:id="@+id/textViewAltitude"
-        android:layout_below="@+id/textViewGPS"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="47dp" />
+        android:layout_marginLeft="56dp"
+        android:layout_marginStart="56dp"
+        android:layout_above="@+id/textPeaks"
+        android:layout_toRightOf="@+id/buttonGPS"
+        android:layout_toEndOf="@+id/buttonGPS" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Najbližšie vrcholy"
         android:id="@+id/textPeaks"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="47dp"
         android:layout_below="@+id/textViewGPS"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -69,8 +69,7 @@
         android:layout_height="wrap_content"
         android:text="Zatvoriť"
         android:id="@+id/buttonExit"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/buttonGPS"
+        android:layout_alignTop="@+id/buttonGPS"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

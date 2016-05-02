@@ -7361,21 +7361,24 @@ public class Data {
         return najblizsie;
     }
 
-    public String vrcholyToString (ArrayList<Kopec> vrcholy) {
+    public String vrcholyToString (ArrayList<Kopec> vrcholy, PolohaMobilu polohaMobilu) {
         String s = new String();
         for (Kopec k : vrcholy) {
             s += k.nazov;
+            s += "(" + (int)zornyUhol(polohaMobilu.altitude, polohaMobilu.latitude, polohaMobilu.longtitude, polohaMobilu.z, k) +")";
             s += ", ";
         }
         return s;
     }
 
-    public ArrayList<Kopec> vrcholyVSmere (ArrayList<Kopec> vrcholy, double myLat, double myLon, double smer, double rozptyl) {
+    public ArrayList<Kopec> vrcholyVRozptyle(ArrayList<Kopec> vrcholy, double myLat, double myLon, double smer, double rozptyl) {
         int pocetVrcholov = vrcholy.size();
         for (int i=pocetVrcholov-1; i >= 0; i--) {
             Kopec k = vrcholy.get(i);
-            if (vidimKopec(myLon, myLat, k.longtitude, k.latitude, smer, rozptyl) == false) {
+            if (jeVrcholVRozptyle(myLon, myLat, k.longtitude, k.latitude, smer, rozptyl) == false) {
                 vrcholy.remove(i);
+            } else {
+
             }
         }
         return vrcholy;
@@ -7384,19 +7387,28 @@ public class Data {
     /* Vrati true, ak je kopec v danom rozptyle (v stupnoch)
     *
     * */
-    public boolean vidimKopec (double myLon, double myLat, double kopecLon, double kopecLat, double smer, double rozptyl) {
+    public boolean jeVrcholVRozptyle(double myLon, double myLat, double kopecLon, double kopecLat, double smer, double rozptyl) {
         rozptyl /= 2;
+        double uhol = horizontalnyUhol(myLon, myLat, kopecLon, kopecLat, smer);
+        if (rozptyl < Math.abs(uhol)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public double horizontalnyUhol (double myLon, double myLat, double kopecLon, double kopecLat, double smer) {
         if (smer < 0) {
             smer = smer + 360;
         }
         double smerKopca = nezmysel; //uhol od S
         final double oneLat = 111.1895769599889; // vzdialenost o jednu latitude
         if (myLon == kopecLon){ // specificky pripad, ktory nevytvori trojuholnik
-                if (myLat > kopecLat) {
-                    smerKopca = 180;
-                } else {
-                    smerKopca = 0;
-                }
+            if (myLat > kopecLat) {
+                smerKopca = 180;
+            } else {
+                smerKopca = 0;
+            }
         } else {
             if (myLon > kopecLon) { //vnutorny uhol
                 double a = distance(myLon, myLat, kopecLon, kopecLat);
@@ -7411,10 +7423,23 @@ public class Data {
             }
         }
         double uhol = rad2deg(smerKopca) - smer; //smer kopca je v radianoch
-        if (rozptyl < Math.abs(uhol)) {
-            return false;
-        } else {
-            return true;
-        }
+        return uhol;
     }
+
+    public double zornyUhol (double mojaNadmorska, double myLat, double myLon, double mobilZ, Kopec k) {
+        double rozdielNV = mojaNadmorska - k.altitude;
+        double vzdialenostOdVrchola = distance(myLon, myLat, k.longtitude, k.latitude) * 1000; //chceme mat vsetko v metroch
+        double uholKopec = rad2deg(Math.asin(rozdielNV/vzdialenostOdVrchola));
+        double uholMobilu = (mobilZ * (-1)) -90;
+        return uholKopec - uholMobilu;
+    }
+
+    public void suradniceKopca (PolohaMobilu polohaMobilu, Kopec kopec) { // ja som na suradnici [0,0,0]
+        double y = kopec.altitude - polohaMobilu.altitude; // rozdiel nadmorskych vysok
+        double vzdielanostOdKopca = distance(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude);
+        double spodnaUhloprieckaKvadra = Math.sqrt((vzdielanostOdKopca*vzdielanostOdKopca) + (y*y));
+        double z = spodnaUhloprieckaKvadra * Math.sin(horizontalnyUhol(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude, 0)); //0??
+        double x = Math.sqrt((spodnaUhloprieckaKvadra*spodnaUhloprieckaKvadra) - (z*z));
+    }
+
 }

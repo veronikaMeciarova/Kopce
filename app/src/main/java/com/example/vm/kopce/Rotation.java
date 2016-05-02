@@ -90,8 +90,6 @@ public class Rotation implements SensorEventListener {
             degree = degree + 360;
         }
 
-//        degree = (degree+270)%360; // smer kamery, pretoze inak by ukazovalo smer vrcholu mobilu
-
         if ((degree <= 45 && degree >= 0) || (degree <= 360 && degree > 315)) {
             return "S";
         }
@@ -104,7 +102,7 @@ public class Rotation implements SensorEventListener {
         if (degree <= 135 && degree > 45) {
             return "Z";
         }
-        return "Neviem zistiť svetovú stranu.";
+        return "Neviem zistiť svetovú stranu.  " + degree;
     }
 
     @Override

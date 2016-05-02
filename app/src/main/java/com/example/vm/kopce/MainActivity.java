@@ -1,15 +1,10 @@
 package com.example.vm.kopce;
 
-        import android.hardware.SensorManager;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.view.View;
         import android.widget.Button;
         import android.widget.TextView;
-        import android.content.Context;
-        import android.location.Location;
-        import android.location.LocationListener;
-        import android.location.LocationManager;
 
         import java.util.ArrayList;
 
@@ -71,16 +66,17 @@ public class MainActivity extends AppCompatActivity {
                     int x = rotation.getX();
                     int y = rotation.getY();
                     int z = rotation.getZ();
-                    //int smerKamery = rotation.smerKamery();
-                    tvRotation.setText(" x: " + Integer.toString(x) + "\n y: " + Integer.toString(y) + "\n z: " + Integer.toString(z) + "\n" + rotation.svetovaStrana(-x));
+                    int smerKamery = rotation.smerKamery();
+                    tvRotation.setText(" x: " + Integer.toString(x) + "\n y: " + Integer.toString(y) + "\n z: " + Integer.toString(z) + "\n" + rotation.svetovaStrana(smerKamery));
 
 
                     //VRCHOLY NA DOHLAD
                     int viditelnostVKm = 10;
                     int rozptyl = 40; // v stupnoch, sucet do prava aj do lava
                     ArrayList<Kopec> viditelneVrcholy = data.vrcholyVOkruhu(lon, lat, viditelnostVKm);
-                    ArrayList<Kopec> vrcholyVSmere = data.vrcholyVSmere(viditelneVrcholy, lat, lon, -x, rozptyl);
-                    String viditelneVrcholyString = data.vrcholyToString(vrcholyVSmere);
+                    ArrayList<Kopec> vrcholyVSmere = data.vrcholyVRozptyle(viditelneVrcholy, lat, lon, smerKamery, rozptyl);
+                    PolohaMobilu polohaMobilu = new PolohaMobilu(lat, lon, altit, rotation);
+                    String viditelneVrcholyString = data.vrcholyToString(vrcholyVSmere, polohaMobilu);
                     tvPeaks.setText("Vrcholy do " + viditelnostVKm + "km:\n" + viditelneVrcholyString);
 
                 } else {
