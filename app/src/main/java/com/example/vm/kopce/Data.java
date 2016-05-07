@@ -1,5 +1,7 @@
 package com.example.vm.kopce;
 
+import android.graphics.Canvas;
+
 import java.util.ArrayList;
 
 public class Data {
@@ -7432,14 +7434,26 @@ public class Data {
         double uholKopec = rad2deg(Math.asin(rozdielNV/vzdialenostOdVrchola));
         double uholMobilu = (mobilZ * (-1)) -90;
         return uholKopec - uholMobilu;
-    }
+    } // opacne??
 
-    public void suradniceKopca (PolohaMobilu polohaMobilu, Kopec kopec) { // ja som na suradnici [0,0,0]
+    // suradnice x,y,z v kartezianskej suradnicovej sustave, na bode [0,0,0] je mobil
+    public KartezianskyKopec suradniceKopca (PolohaMobilu polohaMobilu, Kopec kopec) { // ja som na suradnici [0,0,0]
         double y = kopec.altitude - polohaMobilu.altitude; // rozdiel nadmorskych vysok
-        double vzdielanostOdKopca = distance(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude);
+        double vzdielanostOdKopca = distance(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude) * 1000; // prevod na metre
         double spodnaUhloprieckaKvadra = Math.sqrt((vzdielanostOdKopca*vzdielanostOdKopca) + (y*y));
         double z = spodnaUhloprieckaKvadra * Math.sin(horizontalnyUhol(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude, 0)); //0??
-        double x = Math.sqrt((spodnaUhloprieckaKvadra*spodnaUhloprieckaKvadra) - (z*z));
+        double x = Math.sqrt((spodnaUhloprieckaKvadra * spodnaUhloprieckaKvadra) - (z * z));
+        KartezianskyKopec k = new KartezianskyKopec(kopec.nazov,x,y,z,200);
+        return k;
+    }
+
+    public ArrayList<KartezianskyKopec> KopceDoKartezianskej (ArrayList<Kopec> kopce, PolohaMobilu polohaMobilu) {
+        ArrayList<KartezianskyKopec> kopceVKartezianskej = new ArrayList<>();
+        for (Kopec k :  kopce) {
+            KartezianskyKopec kartezianskyKopec = suradniceKopca(polohaMobilu, k);
+            kopceVKartezianskej.add(kartezianskyKopec);
+        }
+        return kopceVKartezianskej;
     }
 
 }

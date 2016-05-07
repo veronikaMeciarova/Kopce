@@ -1,10 +1,24 @@
 package com.example.vm.kopce;
 
+        import android.content.Context;
+        import android.content.pm.ActivityInfo;
+        import android.hardware.Camera;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
+        import android.util.DisplayMetrics;
+        import android.view.SurfaceHolder;
+        import android.view.SurfaceView;
         import android.view.View;
+        import android.view.ViewGroup;
+        import android.view.ViewParent;
+        import android.view.Window;
+        import android.view.WindowManager;
         import android.widget.Button;
+        import android.widget.FrameLayout;
+        import android.widget.LinearLayout;
+        import android.widget.RelativeLayout;
         import android.widget.TextView;
+        import android.widget.Toast;
 
         import java.util.ArrayList;
 
@@ -12,15 +26,23 @@ public class MainActivity extends AppCompatActivity {
 
     double nezmysel = 20000;
 
+    CameraPreview cv;
+    DrawView dv;
+    FrameLayout alParent;
+    Button btnExit;
+    Button btnGPS;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         final Data data = new Data(); // mal by byť Singleton!!
         final GPSTracker gps = new GPSTracker(MainActivity.this);
 
-        Button btnGPS = (Button)findViewById(R.id.buttonGPS);
-        Button btnExit = (Button)findViewById(R.id.buttonExit);
+        btnGPS = (Button)findViewById(R.id.buttonGPS);
+        btnExit = (Button)findViewById(R.id.buttonExit);
+
 
         final TextView tvGPS = (TextView)findViewById(R.id.textViewGPS);
         final TextView tvAltitude = (TextView)findViewById(R.id.textViewAltitude);
@@ -28,6 +50,16 @@ public class MainActivity extends AppCompatActivity {
         final TextView tvPeaks = (TextView)findViewById(R.id.textPeaks);
 
         final Rotation rotation = new Rotation (MainActivity.this);
+
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+//        WindowManager windowmanager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+//        windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
+//        int deviceWidth = displayMetrics.widthPixels;
+//        int deviceHeight = displayMetrics.heightPixels;
 
         btnGPS.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,15 +70,15 @@ public class MainActivity extends AppCompatActivity {
                     double altit = gps.getAltitude();
 
                     //LEN PRE TESTOVANIE!!!
-                    altit = 400;
-
-                    //Rosina
+//                    altit = 400;
+//
+//                    //Rosina
 //                    lon = 18.764652;
 //                    lat = 49.182103;
 
                     //Matfyz
-                    lat = 48.150959;
-                    lon = 17.070030;
+//                    lat = 48.150959;
+//                    lon = 17.070030;
 
                     // GPS
                     if (lat != nezmysel && lon != nezmysel) {
@@ -72,10 +104,18 @@ public class MainActivity extends AppCompatActivity {
 
                     //VRCHOLY NA DOHLAD
                     int viditelnostVKm = 10;
-                    int rozptyl = 40; // v stupnoch, sucet do prava aj do lava
+                    int rozptyl = 40; // v stupnoch, sucet doprava aj dolava
                     ArrayList<Kopec> viditelneVrcholy = data.vrcholyVOkruhu(lon, lat, viditelnostVKm);
                     ArrayList<Kopec> vrcholyVSmere = data.vrcholyVRozptyle(viditelneVrcholy, lat, lon, smerKamery, rozptyl);
                     PolohaMobilu polohaMobilu = new PolohaMobilu(lat, lon, altit, rotation);
+                    ArrayList<KartezianskyKopec> kartezianskeKopce =  data.KopceDoKartezianskej(vrcholyVSmere,polohaMobilu);
+
+                    dv = new DrawView(MainActivity.this);
+                    dv.setKopce(kartezianskeKopce);
+                    alParent.addView(dv);
+                    btnGPS.bringToFront();
+                    btnExit.bringToFront();
+
                     String viditelneVrcholyString = data.vrcholyToString(vrcholyVSmere, polohaMobilu);
                     tvPeaks.setText("Vrcholy do " + viditelnostVKm + "km:\n" + viditelneVrcholyString);
 
@@ -92,7 +132,55 @@ public class MainActivity extends AppCompatActivity {
                 System.exit(0);
             }
         });
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (cv != null){
+            cv.onPause();
+            cv = null;
+        }
+    }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Load();
+    }
+
+    public static Camera getCameraInstance(){
+        Camera c = null;
+        try {
+            c = Camera.open();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return c;
+    }
+
+    public void Load(){
+        Camera c = getCameraInstance();
+        if (c != null){
+            alParent = (FrameLayout)findViewById(R.id.frameLayout);
+
+            alParent.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.FILL_PARENT,
+                    ViewGroup.LayoutParams.FILL_PARENT));
+
+            cv = new CameraPreview(this,c);
+            alParent.addView(cv);
+
+            setContentView(alParent);
+            btnExit.bringToFront();
+            btnGPS.bringToFront();
+        }
+        else { // ak nenasiel kameru
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Unable to find camera. Closing.", Toast.LENGTH_SHORT);
+            toast.show();
+            finish();
+        }
     }
 }

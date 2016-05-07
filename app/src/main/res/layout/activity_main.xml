@@ -1,44 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity"
-    android:clickable="false">
+    android:id="@+id/frameLayout"
+    >
 
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:tools="http://schemas.android.com/tools"-->
+        <!--android:id="@+id/relativeLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+        <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+        <!--android:paddingTop="@dimen/activity_vertical_margin"-->
+        <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
+        <!--tools:context=".MainActivity"-->
+        <!--android:clickable="false"-->
+        <!-->-->
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zobraz vrcholy"
+            android:id="@+id/buttonGPS"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
     <Button
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Zobraz polohu"
-        android:id="@+id/buttonGPS"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:text="Zatvoriť"
+        android:id="@+id/buttonExit"
+        android:layout_alignTop="@+id/buttonGPS"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="right|top" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Rotácia"
-        android:id="@+id/textViewRotation"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/buttonExit"
-        android:layout_alignStart="@+id/buttonExit" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="GPS súradnice"
-        android:id="@+id/textViewGPS"
-        android:layout_alignParentTop="true"
+        android:text="Najbližšie vrcholy"
+        android:id="@+id/textPeaks"
+        android:layout_marginTop="47dp"
+        android:layout_below="@+id/textViewGPS"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_gravity="left|bottom" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,28 +61,30 @@
         android:layout_marginStart="56dp"
         android:layout_above="@+id/textPeaks"
         android:layout_toRightOf="@+id/buttonGPS"
-        android:layout_toEndOf="@+id/buttonGPS" />
+        android:layout_toEndOf="@+id/buttonGPS"
+        android:layout_gravity="center_horizontal|bottom" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Najbližšie vrcholy"
-        android:id="@+id/textPeaks"
-        android:layout_marginTop="47dp"
-        android:layout_below="@+id/textViewGPS"
+        android:text="GPS súradnice"
+        android:id="@+id/textViewGPS"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_gravity="right|bottom" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Zatvoriť"
-        android:id="@+id/buttonExit"
-        android:layout_alignTop="@+id/buttonGPS"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Rotácia"
+        android:id="@+id/textViewRotation"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/buttonExit"
+        android:layout_alignStart="@+id/buttonExit"
+        android:layout_gravity="right|center_vertical" />
+    <!--</LinearLayout>-->
 
-
-</RelativeLayout>
+</FrameLayout>
