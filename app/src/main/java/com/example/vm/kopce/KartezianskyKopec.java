@@ -7,8 +7,11 @@ import java.util.ArrayList;
  */
 public class KartezianskyKopec {
 
-    private int x;
-    private int y;
+    private int x2d;
+    private int y2d;
+    public double x3d;
+    public double y3d;
+    public double z3d;
     private String nazov;
 
     /**
@@ -18,19 +21,22 @@ public class KartezianskyKopec {
      * @param zoom vzdialenost pozorovatela od obrazovky
      * */
     public KartezianskyKopec(String nazov, double x, double y, double z, double zoom) {
-        this.x = (int)((x/(-zoom-z))*(-zoom));
-        this.y = (int)((y/(-zoom-z))*(-zoom));
+        this.x2d = (int)((x/(-zoom-z))*(-zoom));
+        this.y2d = (int)((y/(-zoom-z))*(-zoom));
+        this.x3d = x;
+        this.y3d = y;
+        this.z3d = z;
 //        this.x = (int) ((x/z)*zoom);
 //        this.y = (int) ((y/z)*zoom);
         this.nazov = nazov;
     }
 
     public int getX() {
-        return x;
+        return x2d;
     }
 
     public int getY() {
-        return y;
+        return y2d;
     }
 
     public String getNazov() {

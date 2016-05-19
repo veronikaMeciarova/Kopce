@@ -70,13 +70,14 @@ public class MainActivity extends AppCompatActivity {
                     double altit = gps.getAltitude();
 
                     //LEN PRE TESTOVANIE!!!
-//                    altit = 400;
 //
 //                    //Rosina
-//                    lon = 18.764652;
-//                    lat = 49.182103;
+                    altit = 400;
+                    lon = 18.764652;
+                    lat = 49.182103;
 
-                    //Matfyz
+//                    //Matfyz
+//                    altit = 140;
 //                    lat = 48.150959;
 //                    lon = 17.070030;
 
@@ -110,9 +111,9 @@ public class MainActivity extends AppCompatActivity {
                     PolohaMobilu polohaMobilu = new PolohaMobilu(lat, lon, altit, rotation);
                     ArrayList<KartezianskyKopec> kartezianskeKopce =  data.KopceDoKartezianskej(vrcholyVSmere,polohaMobilu);
 
-                    dv = new DrawView(MainActivity.this);
-                    dv.setKopce(kartezianskeKopce);
-                    alParent.addView(dv);
+//                    dv = new DrawView(MainActivity.this);
+//                    dv.setKopce(kartezianskeKopce);
+//                    alParent.addView(dv);
                     btnGPS.bringToFront();
                     btnExit.bringToFront();
 
@@ -143,11 +144,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-        Load();
-    }
+//    @Override
+//    protected void onResume(){
+//        super.onResume();
+//        Load();
+//    }
 
     public static Camera getCameraInstance(){
         Camera c = null;

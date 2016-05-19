@@ -7367,11 +7367,15 @@ public class Data {
         String s = new String();
         for (Kopec k : vrcholy) {
             s += k.nazov;
-            s += "(" + (int)zornyUhol(polohaMobilu.altitude, polohaMobilu.latitude, polohaMobilu.longtitude, polohaMobilu.z, k) +")";
-            s += ", ";
+            s += "  (" + (int)zornyUhol(polohaMobilu.altitude, polohaMobilu.latitude, polohaMobilu.longtitude, polohaMobilu.z, k) +", ";
+            s += (int)horizontalnyUhol(polohaMobilu.longtitude, polohaMobilu.latitude, k.longtitude, k.latitude, polohaMobilu.smerKamery) + ", ";
+            KartezianskyKopec kk  = suradniceKopca(polohaMobilu, k);
+            s += "  [" + (int)kk.x3d + ", " + (int)kk.y3d + ", " + (int)kk.z3d + "])";
+            s += "\n";
         }
         return s;
     }
+
 
     public ArrayList<Kopec> vrcholyVRozptyle(ArrayList<Kopec> vrcholy, double myLat, double myLon, double smer, double rozptyl) {
         int pocetVrcholov = vrcholy.size();
@@ -7425,7 +7429,7 @@ public class Data {
             }
         }
         double uhol = rad2deg(smerKopca) - smer; //smer kopca je v radianoch
-        return uhol;
+        return -uhol;
     }
 
     public double zornyUhol (double mojaNadmorska, double myLat, double myLon, double mobilZ, Kopec k) {
@@ -7434,15 +7438,27 @@ public class Data {
         double uholKopec = rad2deg(Math.asin(rozdielNV/vzdialenostOdVrchola));
         double uholMobilu = (mobilZ * (-1)) -90;
         return uholKopec - uholMobilu;
-    } // opacne??
+    }
 
     // suradnice x,y,z v kartezianskej suradnicovej sustave, na bode [0,0,0] je mobil
+    // suradnice su v metroch
+    // problem so zapornymi uhlami - co s nimi?
     public KartezianskyKopec suradniceKopca (PolohaMobilu polohaMobilu, Kopec kopec) { // ja som na suradnici [0,0,0]
-        double y = kopec.altitude - polohaMobilu.altitude; // rozdiel nadmorskych vysok
         double vzdielanostOdKopca = distance(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude) * 1000; // prevod na metre
-        double spodnaUhloprieckaKvadra = Math.sqrt((vzdielanostOdKopca*vzdielanostOdKopca) + (y*y));
-        double z = spodnaUhloprieckaKvadra * Math.sin(horizontalnyUhol(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude, 0)); //0??
-        double x = Math.sqrt((spodnaUhloprieckaKvadra * spodnaUhloprieckaKvadra) - (z * z));
+        double zornyUhol = zornyUhol(polohaMobilu.altitude, polohaMobilu.latitude, polohaMobilu.longtitude, polohaMobilu.z, kopec);
+        double y = vzdielanostOdKopca * Math.sin(Math.abs(zornyUhol));
+        if (zornyUhol < 0) {
+            y *= -1;
+        }
+        double spodnaUhlopriecka = Math.sqrt((vzdielanostOdKopca * vzdielanostOdKopca) + (y * y));
+        double horizontalnyUhol = horizontalnyUhol(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude, polohaMobilu.smerKamery);
+        double horAbs = Math.abs(horizontalnyUhol);
+        double horSin = Math.sin(horAbs);
+        double x = spodnaUhlopriecka * horSin;
+        if (horizontalnyUhol < 0) {
+            x *= -1;
+        }
+        double z = Math.sqrt((spodnaUhlopriecka * spodnaUhlopriecka) - (x * x));
         KartezianskyKopec k = new KartezianskyKopec(kopec.nazov,x,y,z,200);
         return k;
     }
