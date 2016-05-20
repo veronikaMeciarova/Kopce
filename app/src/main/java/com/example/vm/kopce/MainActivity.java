@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Data data = new Data(); // mal by byť Singleton!!
+        final Data data = new Data(MainActivity.this); // mal by byť Singleton!!
         final GPSTracker gps = new GPSTracker(MainActivity.this);
 
         btnGPS = (Button)findViewById(R.id.buttonGPS);
@@ -51,15 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
         final Rotation rotation = new Rotation (MainActivity.this);
 
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // Make this activity, full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        WindowManager windowmanager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-//        windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
-//        int deviceWidth = displayMetrics.widthPixels;
-//        int deviceHeight = displayMetrics.heightPixels;
 
         btnGPS.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
                     //LEN PRE TESTOVANIE!!!
 //
 //                    //Rosina
-                    altit = 400;
-                    lon = 18.764652;
-                    lat = 49.182103;
+//                    altit = 400;
+//                    lon = 18.764652;
+//                    lat = 49.182103;
 
 //                    //Matfyz
 //                    altit = 140;
@@ -104,16 +99,16 @@ public class MainActivity extends AppCompatActivity {
 
 
                     //VRCHOLY NA DOHLAD
-                    int viditelnostVKm = 10;
-                    int rozptyl = 40; // v stupnoch, sucet doprava aj dolava
+                    int viditelnostVKm = 8;
+                    int rozptyl = 90; // v stupnoch, sucet doprava aj dolava
                     ArrayList<Kopec> viditelneVrcholy = data.vrcholyVOkruhu(lon, lat, viditelnostVKm);
                     ArrayList<Kopec> vrcholyVSmere = data.vrcholyVRozptyle(viditelneVrcholy, lat, lon, smerKamery, rozptyl);
                     PolohaMobilu polohaMobilu = new PolohaMobilu(lat, lon, altit, rotation);
                     ArrayList<KartezianskyKopec> kartezianskeKopce =  data.KopceDoKartezianskej(vrcholyVSmere,polohaMobilu);
 
-//                    dv = new DrawView(MainActivity.this);
-//                    dv.setKopce(kartezianskeKopce);
-//                    alParent.addView(dv);
+                    dv = new DrawView(MainActivity.this);
+                    dv.setKopce(kartezianskeKopce);
+                    alParent.addView(dv);
                     btnGPS.bringToFront();
                     btnExit.bringToFront();
 
@@ -144,11 +139,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onResume(){
-//        super.onResume();
-//        Load();
-//    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Load();
+    }
 
     public static Camera getCameraInstance(){
         Camera c = null;

@@ -21,13 +21,13 @@ public class KartezianskyKopec {
      * @param zoom vzdialenost pozorovatela od obrazovky
      * */
     public KartezianskyKopec(String nazov, double x, double y, double z, double zoom) {
-        this.x2d = (int)((x/(-zoom-z))*(-zoom));
-        this.y2d = (int)((y/(-zoom-z))*(-zoom));
+//        this.x2d = (int)((x/(-zoom-z))*(-zoom));
+//        this.y2d = (int)((y/(-zoom-z))*(-zoom));
         this.x3d = x;
         this.y3d = y;
         this.z3d = z;
-//        this.x = (int) ((x/z)*zoom);
-//        this.y = (int) ((y/z)*zoom);
+        this.x2d = (int) ((x/z)*zoom);
+        this.y2d = (int) ((y/z)*zoom);
         this.nazov = nazov;
     }
 

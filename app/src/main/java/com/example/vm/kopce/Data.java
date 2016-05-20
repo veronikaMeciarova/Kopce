@@ -1,6 +1,9 @@
 package com.example.vm.kopce;
 
+import android.content.Context;
 import android.graphics.Canvas;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 
@@ -8,11 +11,19 @@ public class Data {
 
     ArrayList<Kopec> databaza;
     double nezmysel = 20000;
+    int deviceWidth;
+    int deviceHeight;
 
-    public Data() {
+    public Data(Context context) {
         databaza = new ArrayList<>();
         Kopec k;
         this.naplnDatabazu();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowmanager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
+        this.deviceWidth = displayMetrics.widthPixels;
+        this.deviceHeight = displayMetrics.heightPixels;
     }
 
     public void naplnDatabazu() { // jedna metoda moze mat len 64KB kodu, preto je rozdelena na 8 casti
@@ -7445,21 +7456,13 @@ public class Data {
     // problem so zapornymi uhlami - co s nimi?
     public KartezianskyKopec suradniceKopca (PolohaMobilu polohaMobilu, Kopec kopec) { // ja som na suradnici [0,0,0]
         double vzdielanostOdKopca = distance(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude) * 1000; // prevod na metre
-        double zornyUhol = zornyUhol(polohaMobilu.altitude, polohaMobilu.latitude, polohaMobilu.longtitude, polohaMobilu.z, kopec);
-        double y = vzdielanostOdKopca * Math.sin(Math.abs(zornyUhol));
-        if (zornyUhol < 0) {
-            y *= -1;
-        }
-        double spodnaUhlopriecka = Math.sqrt((vzdielanostOdKopca * vzdielanostOdKopca) + (y * y));
-        double horizontalnyUhol = horizontalnyUhol(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude, polohaMobilu.smerKamery);
-        double horAbs = Math.abs(horizontalnyUhol);
-        double horSin = Math.sin(horAbs);
-        double x = spodnaUhlopriecka * horSin;
-        if (horizontalnyUhol < 0) {
-            x *= -1;
-        }
+        double zornyUholRad = deg2rad(zornyUhol(polohaMobilu.altitude, polohaMobilu.latitude, polohaMobilu.longtitude, polohaMobilu.z, kopec));
+        double y = vzdielanostOdKopca * Math.sin(zornyUholRad);
+        double spodnaUhlopriecka = Math.sqrt((vzdielanostOdKopca * vzdielanostOdKopca) + (Math.abs(y * y)));
+        double horizontalnyUholRad = deg2rad(horizontalnyUhol(polohaMobilu.longtitude, polohaMobilu.latitude, kopec.longtitude, kopec.latitude, polohaMobilu.smerKamery));
+        double x = spodnaUhlopriecka * Math.sin(horizontalnyUholRad);
         double z = Math.sqrt((spodnaUhlopriecka * spodnaUhlopriecka) - (x * x));
-        KartezianskyKopec k = new KartezianskyKopec(kopec.nazov,x,y,z,200);
+        KartezianskyKopec k = new KartezianskyKopec(kopec.nazov,x,y,z, deviceWidth/2);
         return k;
     }
 
