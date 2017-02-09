@@ -61,6 +61,8 @@ public class Rotation implements SensorEventListener {
         x = (int) ((orientation[0] * 180) / Math.PI);
         y = (int) ((orientation[1] * 180) / Math.PI);
         z = (int) ((orientation[2] * 180) / Math.PI);
+
+        System.out.println("->>>  " + x + "    " + y + "    " + z);
     }
 
     public int getX() {

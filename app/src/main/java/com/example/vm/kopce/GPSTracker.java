@@ -65,7 +65,7 @@ public class GPSTracker extends Service implements LocationListener{
     public double getAltitude() {
         Location loc = this.getLocation();
         if (loc == null) {
-            return 20000;
+            return nezmysel;
         } else {
             return loc.getAltitude();
         }

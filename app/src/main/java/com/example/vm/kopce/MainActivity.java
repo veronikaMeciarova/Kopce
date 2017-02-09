@@ -21,6 +21,7 @@ package com.example.vm.kopce;
         import android.widget.Toast;
 
         import java.util.ArrayList;
+        import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout alParent;
     Button btnExit;
     Button btnGPS;
+    Camera camera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +66,6 @@ public class MainActivity extends AppCompatActivity {
                     double lon = gps.getLongitude();
                     double altit = gps.getAltitude();
 
-                    //LEN PRE TESTOVANIE!!!
-//
-//                    //Rosina
-//                    altit = 400;
-//                    lon = 18.764652;
-//                    lat = 49.182103;
-
-//                    //Matfyz
-//                    altit = 140;
-//                    lat = 48.150959;
-//                    lon = 17.070030;
 
                     // GPS
                     if (lat != nezmysel && lon != nezmysel) {
@@ -130,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //------------------------------------------KAMERA-------------------------------------------
     @Override
     protected void onPause() {
         super.onPause();
@@ -157,15 +149,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Load(){
-        Camera c = getCameraInstance();
-        if (c != null){
+        camera = getCameraInstance();
+        if (camera != null){
+            initializeCameraParameters();
             alParent = (FrameLayout)findViewById(R.id.frameLayout);
 
             alParent.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.FILL_PARENT,
                     ViewGroup.LayoutParams.FILL_PARENT));
 
-            cv = new CameraPreview(this,c);
+            cv = new CameraPreview(this,camera);
             alParent.addView(cv);
 
             setContentView(alParent);
@@ -177,6 +170,42 @@ public class MainActivity extends AppCompatActivity {
                     "Unable to find camera. Closing.", Toast.LENGTH_SHORT);
             toast.show();
             finish();
+        }
+    }
+
+    private void initializeCameraParameters() {
+        System.out.println("------------------nastavujem--------------------------------");
+        int mDesiredCameraPreviewWidth = 176;
+        Camera.Parameters parameters = camera.getParameters();
+
+        //ROZLISENIE
+        List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
+        int currentWidth = 0;
+        int currentHeight = 0;
+        boolean foundDesiredWidth = false;
+        for (Camera.Size s : sizes) {
+            System.out.print(" " + s.width + "x" + s.height);
+            if (s.width == mDesiredCameraPreviewWidth) {
+                currentWidth = s.width;
+                currentHeight = s.height;
+                foundDesiredWidth = true;
+                break;
+            }
+        }
+        if (foundDesiredWidth) {
+            parameters.setPreviewSize(currentWidth, currentHeight);
+            camera.setParameters(parameters);
+            System.out.println("-------------nastavil som---------");
+        }
+
+        //FPS
+        List<int[]> fpses = parameters.getSupportedPreviewFpsRange();
+        for (int[] fps : fpses) {
+            System.out.print("---fps--->");
+            for (int i : fps) {
+                System.out.print(i + " ");
+            }
+            System.out.println();
         }
     }
 }

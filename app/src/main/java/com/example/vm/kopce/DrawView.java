@@ -1,6 +1,7 @@
 package com.example.vm.kopce;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
@@ -38,10 +39,14 @@ public class DrawView extends SurfaceView{
     protected void onDraw(Canvas canvas){
         int xShift = deviceWidth/2;
         int yShift = deviceHeight/2;
-        for (KartezianskyKopec k : kopce) {
-            canvas.drawText(k.getNazov(), k.getX()+xShift-20, yShift-k.getY()-20, textPaint);
-            canvas.drawCircle(k.getX()+xShift, yShift-k.getY(), 3, textPaint);
-        }
+        Bitmap panorama = CannyEdgeDetector.getPanoramaEdges();
+        canvas.drawBitmap(panorama, 0, 0, null);
+//        for (KartezianskyKopec k : kopce) {
+//            canvas.drawText(k.getNazov(), k.getX() + xShift - 20, yShift - k.getY() - 20, textPaint);
+//            canvas.drawCircle(k.getX() + xShift, yShift - k.getY(), 3, textPaint);
+//
+//
+//        }
     }
 
     public void setKopce (ArrayList<KartezianskyKopec> kopce) {
